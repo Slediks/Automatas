@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "COLH7qQ5BLA=",
+  "success": true,
+  "projectFilePath": "E:\\Coding\\Automatas\\MealyMoore\\MealyMoore.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\alzyk\\.nuget\\packages\\consoletables\\2.6.2\\consoletables.2.6.2.nupkg.sha512",
+    "C:\\Users\\alzyk\\.nuget\\packages\\csvhelper\\33.0.1\\csvhelper.33.0.1.nupkg.sha512",
+    "C:\\Users\\alzyk\\.nuget\\packages\\wcwidth\\1.0.0\\wcwidth.1.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

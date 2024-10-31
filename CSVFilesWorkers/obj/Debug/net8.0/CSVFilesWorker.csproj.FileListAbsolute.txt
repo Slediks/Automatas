@@ -1,0 +1,15 @@
+E:\Coding\Automatas\CSVFilesWorker\bin\Debug\net8.0\CSVFilesWorker.deps.json
+E:\Coding\Automatas\CSVFilesWorker\bin\Debug\net8.0\CSVFilesWorker.dll
+E:\Coding\Automatas\CSVFilesWorker\bin\Debug\net8.0\CSVFilesWorker.pdb
+E:\Coding\Automatas\CSVFilesWorker\obj\Debug\net8.0\CSVFilesWorker.csproj.AssemblyReference.cache
+E:\Coding\Automatas\CSVFilesWorker\obj\Debug\net8.0\CSVFilesWorker.GeneratedMSBuildEditorConfig.editorconfig
+E:\Coding\Automatas\CSVFilesWorker\obj\Debug\net8.0\CSVFilesWorker.AssemblyInfoInputs.cache
+E:\Coding\Automatas\CSVFilesWorker\obj\Debug\net8.0\CSVFilesWorker.AssemblyInfo.cs
+E:\Coding\Automatas\CSVFilesWorker\obj\Debug\net8.0\CSVFilesWorker.csproj.CoreCompileInputs.cache
+E:\Coding\Automatas\CSVFilesWorker\obj\Debug\net8.0\CSVFilesWorker.dll
+E:\Coding\Automatas\CSVFilesWorker\obj\Debug\net8.0\refint\CSVFilesWorker.dll
+E:\Coding\Automatas\CSVFilesWorker\obj\Debug\net8.0\CSVFilesWorker.pdb
+E:\Coding\Automatas\CSVFilesWorker\obj\Debug\net8.0\ref\CSVFilesWorker.dll
+E:\Coding\Automatas\CSVFilesWorker\bin\Debug\net8.0\Domain.dll
+E:\Coding\Automatas\CSVFilesWorker\bin\Debug\net8.0\Domain.pdb
+E:\Coding\Automatas\CSVFilesWorker\obj\Debug\net8.0\CSVFiles.3131DEC4.Up2Date
