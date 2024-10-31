@@ -11,10 +11,10 @@ public class AutomataImageVisualizer(Automata automata)
     private readonly string _graphvizPath = "./Graphviz/bin/dot.exe";
     private readonly string _graphName = "Graph";
 
-    public async Task ToImage()
+    public async Task ToImage(string imagePath)
     {
-        var path = $"{automata.GetType().Name.ToLower()}.png";
-        var tempDataPath = $"{path}.dot";
+        
+        var tempDataPath = $"{imagePath}.dot";
 
         await File.WriteAllTextAsync(
             tempDataPath,
@@ -25,7 +25,7 @@ public class AutomataImageVisualizer(Automata automata)
             StartInfo = new ProcessStartInfo
             {
                 FileName = _graphvizPath,
-                Arguments = $"-Tpng {tempDataPath} -o {path}",
+                Arguments = $"-Tpng {tempDataPath} -o {imagePath}",
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
@@ -65,9 +65,9 @@ public class AutomataImageVisualizer(Automata automata)
         foreach (var state in automata.AllStates)
         {
             var style = "filled";
-            var label = state.Name + (automata.GetType().Name.Equals("Moore")
-                ? "/" + automata.Transitions.First(t => t.To.Equals(state)).AdditionalData
-                : "");
+            var label = automata.GetType().Name.Equals("Moore")
+                ? state.ToString()
+                : state.Name;
             var shape = "circle";
             var fillcolor = "white";
             

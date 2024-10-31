@@ -15,6 +15,8 @@ public class AutomataConsoleVisualizer(Automata automata)
         var rows = BuildRows(columns).ToArray();
 
         var table = new ConsoleTable(columns);
+        table.Options.EnableCount = false;
+        
         foreach (var row in rows)
         {
             table.AddRow(row.ToArray());
@@ -58,7 +60,7 @@ public class AutomataConsoleVisualizer(Automata automata)
                     continue;
                 }
 
-                var transitions = automata.Transitions
+                row.Add(automata.Transitions
                     .Where(t =>
                         t.Argument.Equals(argument) &&
                         t.From.Name == column.Split("/")[0])
@@ -72,9 +74,7 @@ public class AutomataConsoleVisualizer(Automata automata)
 
                         return transitionName;
                     })
-                    .ToList();
-                
-                row.Add(string.Join(",", transitions));
+                    .First());
             }
             
             yield return row;
@@ -84,32 +84,11 @@ public class AutomataConsoleVisualizer(Automata automata)
     private IEnumerable<string> BuildColumns()
     {
         var columns = new List<string> { "Id" };
-        // columns.AddRange(automata.Alphabet.Select(a => a.Value).Order());
-        // columns.AddRange(automata.Overrides != null
-        //     ? automata.Overrides.Keys.Select(k => k.Name)
-        //     : automata.AllStates.Select(s => s.Name).Order());
 
-        if (automata.GetType() == typeof(Moore))
-        {
-            if (automata.Overrides != null)
-            {
-                foreach (var automataOverride in automata.Overrides)
-                {
-                    columns.Add(automataOverride.Key.Name + "/" + automataOverride.Value.Item2);
-                }
-            }
-            else
-            {
-                foreach (var state in automata.AllStates)
-                {
-                    columns.Add(state.Name + "/" + automata.Transitions.First(t => t.To.Name == state.Name).AdditionalData);
-                }
-            }
-        }
-        else
-        {
-            columns.AddRange(automata.AllStates.Select(s => s.Name));
-        }
+        
+        columns.AddRange(automata.GetType().Name == "Moore"
+            ? automata.AllStates.Select(s => s.ToString())
+            : automata.AllStates.Select(s => s.Name));
 
         return columns;
     }

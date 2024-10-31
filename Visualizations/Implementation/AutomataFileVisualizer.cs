@@ -7,16 +7,9 @@ namespace Visualizations.Implementation;
 
 public class AutomataFileVisualizer
 {
-    public void WriteAutomataToFile(Automata automata)
+    public void WriteAutomataToFile(Automata automata, string filePath)
     {
-        var filePath = "output_"
-                       + automata.GetType().Name.ToLower()
-                       + ".csv";
-        
-        Console.WriteLine($"Writing to \"{filePath}\"");
-        
         WriteRowsToCsvFile(ConvertAutomataToRows(automata), filePath);
-        Console.WriteLine($"Wrote to \"{filePath}\"");
     }
 
     private List<List<string>> ConvertAutomataToRows(Automata automata)
@@ -31,10 +24,7 @@ public class AutomataFileVisualizer
         if (automataType.Equals("Moore"))
         {
             row.Add("");
-            foreach (var state in states)
-            {
-                row.Add(automata.Transitions.First(t => t.To.Name.Equals(state)).AdditionalData);
-            }
+            row.AddRange(automata.AllStates.Select(s => s.OutputSignal!));
             
             rows.Add([..row]);
             row.Clear();
@@ -59,7 +49,7 @@ public class AutomataFileVisualizer
                     .Select(t =>
                     {
                         string transitionName = t.To.Name;
-                        if (automataType != "Moore")
+                        if (!automataType.Equals("Moore"))
                         {
                             transitionName = $"{transitionName}/{t.AdditionalData}";
                         }

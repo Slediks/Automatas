@@ -34,13 +34,15 @@ public class Program
     private static void Moore()
     {
         // Moore
-        var automata = new Moore(new AutomataFileReader().CreateAutomataFromFile(InputMooreFilePath));
+        var automata = new Moore(new AutomataFileReader().CreateAutomataFromFile(InputMooreFilePath)); //Automata creation
         automata
-            .PrintToConsole()
-            .PrintToImage()
-            .Convert(new MooreMealyConvertor())
-            .PrintToConsole()
-            .PrintToFile()
-            .PrintToImage();
+            .PrintToConsole() //Print to console as table  <- Moore
+            .PrintToImage() //Create .png file with graph  <- Moore
+            
+            .Convert(new MooreMealyConvertor()) //Convert Moore to Mealy
+            
+            .PrintToConsole() //Print to console as table  <- Mealy
+            .PrintToFile() //Create .csv file with table   <- Mealy
+            .PrintToImage(); //Create .png file with graph <- Mealy
     }
 }

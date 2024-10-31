@@ -43,12 +43,20 @@ public class MealyMooreConvertor : IAutomataConvertor<Mealy, Moore>
 
         foreach (var transition in automata.Transitions)
         {
-            preStates.Add((transition.To, transition.AdditionalData!));
+            preStates.Add((transition.To, transition.AdditionalData));
         }
 
+        foreach (var state in automata.AllStates)
+        {
+            if (!preStates.Select(s => s.Item1).Contains(state))
+            {
+                states.Add(new State($"q{states.Count}", "-"), (state, "-"));
+            }
+        }
+        
         foreach (var preState in preStates.Order())
         {
-            states.Add(new State($"q{states.Count}"), preState);
+            states.Add(new State($"q{states.Count}", preState.Item2), preState);
         }
 
         return states;

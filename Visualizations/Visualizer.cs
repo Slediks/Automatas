@@ -6,12 +6,13 @@ namespace Visualizations;
 public static class Visualizer
 {
     public static T PrintToConsole<T>(
-        this T automata,
-        string? title = null)
+        this T automata)
         where T : Automata
     {
-        Console.WriteLine(title);
+        Console.WriteLine($"|------<  {automata.GetType().Name}  >------|");
+        
         new AutomataConsoleVisualizer(automata).Print();
+        
         return automata;
     }
 
@@ -19,15 +20,26 @@ public static class Visualizer
         this T automata)
         where T : Automata
     {
-        new AutomataFileVisualizer().WriteAutomataToFile(automata);
+        var filePath = $"output_{automata.GetType().Name.ToLower()}.csv";
+        
+        new AutomataFileVisualizer().WriteAutomataToFile(automata, filePath);
+        
+        Console.WriteLine($"Table created: {filePath}");
+        Console.WriteLine();
+        
         return automata;
     }
 
     public static T PrintToImage<T>(this T automata)
         where T : Automata
     {
-        Task task = new AutomataImageVisualizer(automata).ToImage();
+        var path = $"{automata.GetType().Name.ToLower()}.png";
+        
+        Task task = new AutomataImageVisualizer(automata).ToImage(path);
         task.Wait();
+        
+        Console.WriteLine($"Graph created: {path}");
+        Console.WriteLine();
         
         return automata;
     }

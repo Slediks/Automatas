@@ -21,11 +21,18 @@ public class AutomataFileReader
             : null;
         
         var states = GetStatesFromRecord(records[headerRowsCnt - 1]);
+        if (additionalData != null)
+        {
+            for (int i = 0; i < states.Count; i++)
+            {
+                states[i].OutputSignal = additionalData[i];
+            }
+        }
+        
         var alphabet = GetArgumentsFromRecord(records.Skip(headerRowsCnt));
         var transitions = GetTransitionsFromRecord(records.Skip(headerRowsCnt).ToList(),
             states,
-            alphabet,
-            additionalData);
+            alphabet);
         
         return new Automata(alphabet, transitions, states);
     }
@@ -71,7 +78,7 @@ public class AutomataFileReader
     }
 
     private List<Transition> GetTransitionsFromRecord(List<List<string>> records, List<State> states,
-        List<Argument> alphabet, List<string>? additionalData)
+        List<Argument> alphabet)
     {
         var transitions = new List<Transition>();
         
@@ -85,9 +92,7 @@ public class AutomataFileReader
                     from: states[j - 1],
                     to: states.First(s => s.Name == parsedCell[0]),
                     argument: alphabet[i],
-                    additionalData: additionalData != null
-                        ? additionalData[states.IndexOf(states.First(s => s.Name == parsedCell[0]))]
-                        : parsedCell[1]));
+                    additionalData: states.First(s => s.Name == parsedCell[0]).OutputSignal ?? parsedCell[1]));
             }
         }
 
