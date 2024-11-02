@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "MealyToMoore": {
+      "commandName": "Project",
+      "commandLineArgs": "convert mealy input_mealy.csv"
+    },
+    "MooreToMealy": {
+      "commandName": "Project",
+      "commandLineArgs": "convert moore input_moore.csv"
+    }
+  }
+}

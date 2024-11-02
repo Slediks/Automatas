@@ -8,41 +8,73 @@ namespace MealyMoore;
 
 public class Program
 {
-    private const string InputMealyFilePath = "input_mealy.csv";
-    private const string InputMooreFilePath = "input_moore.csv";
-
-    public static void Main()
+    private static string _inputFilePath = string.Empty;
+    public static void Main(string[] args)
     {
-        Mealy();
+        var program = args[0];
+        var automataType = args[1];
+        _inputFilePath = args[2];
+
+        Automata automata;
+        switch (automataType)
+        {
+            case "mealy":
+                break;
+            case "moore":
+                break;
+            default:
+                throw new ArgumentException($"Unknown automata type: {automataType}");
+        }
+
+        switch (program)
+        {
+            case "convert":
+                automata = automataType == "mealy"
+                    ? Convert(Mealy())
+                    : Convert(Moore());
+                break;
+            default:
+                throw new ArgumentException($"Unknown program type: {program}");
+        }
         
-        // Moore();
+        PrintAll(automata);
     }
 
-    private static void Mealy()
+    private static Mealy Mealy()
     {
         // Mealy
-        var automata = new Mealy(new AutomataFileReader().CreateAutomataFromFile(InputMealyFilePath));
+        var automata = new Mealy(new AutomataFileReader().CreateAutomataFromFile(_inputFilePath));
         automata
             .PrintToConsole()
-            .PrintToImage()
-            .Convert(new MealyMooreConvertor())
+            .PrintToImage();
+        return automata;
+    }
+    
+    private static Moore Moore()
+    {
+        // Moore
+        var automata = new Moore(new AutomataFileReader().CreateAutomataFromFile(_inputFilePath)); //Automata creation
+        automata
+            .PrintToConsole() //Print to console as table  <- Moore
+            .PrintToImage(); //Create .png file with graph  <- Moore
+        return automata;
+    }
+
+    private static Moore Convert(Mealy automata)
+    {
+        return automata.Convert(new MealyMooreConvertor());
+    }
+
+    private static Mealy Convert(Moore automata)
+    {
+        return automata.Convert(new MooreMealyConvertor());
+    }
+
+    private static void PrintAll(Automata automata)
+    {
+        automata
             .PrintToConsole()
             .PrintToFile()
             .PrintToImage();
-    }
-
-    private static void Moore()
-    {
-        // Moore
-        var automata = new Moore(new AutomataFileReader().CreateAutomataFromFile(InputMooreFilePath)); //Automata creation
-        automata
-            .PrintToConsole() //Print to console as table  <- Moore
-            .PrintToImage() //Create .png file with graph  <- Moore
-            
-            .Convert(new MooreMealyConvertor()) //Convert Moore to Mealy
-            
-            .PrintToConsole() //Print to console as table  <- Mealy
-            .PrintToFile() //Create .csv file with table   <- Mealy
-            .PrintToImage(); //Create .png file with graph <- Mealy
     }
 }
