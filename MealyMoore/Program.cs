@@ -1,6 +1,7 @@
 ﻿using CSVFilesWorkers.FileReaders;
 using Domain.Convertors;
 using Domain.Convertors.Convertors;
+using Domain.Convertors.Convertors.Minimization.Implementation;
 using Domain.Models.Automatas;
 using Visualizations;
 
@@ -32,6 +33,11 @@ public class Program
                 automata = automataType == "mealy"
                     ? Convert(Mealy())
                     : Convert(Moore());
+                break;
+            case "minimize":
+                automata = automataType == "mealy"
+                    ? Minimize(Mealy())
+                    : Minimize(Moore());
                 break;
             default:
                 throw new ArgumentException($"Unknown program type: {program}");
@@ -76,5 +82,10 @@ public class Program
             .PrintToConsole()
             .PrintToFile()
             .PrintToImage();
+    }
+
+    private static Automata Minimize(Automata automata)
+    {
+        return automata.Minimize(new Minimizer());
     }
 }

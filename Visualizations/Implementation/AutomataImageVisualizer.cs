@@ -10,6 +10,7 @@ public class AutomataImageVisualizer(Automata automata)
 {
     private readonly string _graphvizPath = "./Graphviz/bin/dot.exe";
     private readonly string _graphName = "Graph";
+    private readonly bool _isMoore = automata.AllStates.First().OutputSignal != null;
 
     public async Task ToImage(string imagePath)
     {
@@ -65,7 +66,7 @@ public class AutomataImageVisualizer(Automata automata)
         foreach (var state in automata.AllStates)
         {
             var style = "filled";
-            var label = automata.GetType().Name.Equals("Moore")
+            var label = _isMoore
                 ? state.ToString()
                 : state.Name;
             var shape = "circle";
@@ -80,7 +81,7 @@ public class AutomataImageVisualizer(Automata automata)
         foreach (var transition in automata.Transitions)
         {
             var label = transition.Argument.Value
-                        + (automata.GetType().Name.Equals("Mealy")
+                        + (!_isMoore
                             ? "/" + transition.AdditionalData
                             : "");
             yield return $"{transition.From.Name} -> {transition.To.Name} [label=\"{label}\"];";

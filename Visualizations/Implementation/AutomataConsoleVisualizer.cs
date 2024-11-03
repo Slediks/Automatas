@@ -6,6 +6,7 @@ namespace Visualizations.Implementation;
 
 public class AutomataConsoleVisualizer(Automata automata)
 {
+    private readonly bool _isMoore = automata.AllStates.First().OutputSignal != null;
     public void Print()
     {
         // Create columns
@@ -67,7 +68,7 @@ public class AutomataConsoleVisualizer(Automata automata)
                     .Select(t =>
                     {
                         string transitionName = t.To.Name;
-                        if (automata.GetType().Name != "Moore")
+                        if (!_isMoore)
                         {
                             transitionName = $"{transitionName}/{t.AdditionalData}";
                         }
@@ -86,7 +87,7 @@ public class AutomataConsoleVisualizer(Automata automata)
         var columns = new List<string> { "Id" };
 
         
-        columns.AddRange(automata.GetType().Name == "Moore"
+        columns.AddRange(_isMoore
             ? automata.AllStates.Select(s => s.ToString())
             : automata.AllStates.Select(s => s.Name));
 

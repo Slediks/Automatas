@@ -4,7 +4,7 @@ namespace Domain.Convertors;
 
 public interface IAutomataConvertor<out TOutput>
 {
-    TOutput Convert(Automata automata);
+    TOutput Minimize(Automata automata);
 }
 
 public interface IAutomataConvertor<in TInput, out TOutput>

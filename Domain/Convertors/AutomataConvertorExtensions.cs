@@ -1,14 +1,15 @@
+using Domain.Convertors.Convertors;
 using Domain.Models.Automatas;
 
 namespace Domain.Convertors;
 
 public static class AutomataConvertorExtensions
 {
-    public static TOutput Convert<TOutput>(
+    public static TOutput Minimize<TOutput>(
         this Automata automata,
-        IAutomataConvertor<TOutput> convertor)
+        IAutomataConvertor<TOutput> minimizer)
     {
-        return convertor.Convert(automata);
+        return minimizer.Minimize(automata);
     }
 
     public static TOutput Convert<TInput, TOutput>(

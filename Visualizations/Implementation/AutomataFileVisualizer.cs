@@ -7,8 +7,10 @@ namespace Visualizations.Implementation;
 
 public class AutomataFileVisualizer
 {
+    private bool _isMoore = false;
     public void WriteAutomataToFile(Automata automata, string filePath)
     {
+        _isMoore = automata.AllStates.First().OutputSignal != null;
         WriteRowsToCsvFile(ConvertAutomataToRows(automata), filePath);
     }
 
@@ -16,12 +18,11 @@ public class AutomataFileVisualizer
     {
         var rows = new List<List<string>>();
         var row = new List<string>();
-        var automataType = automata.GetType().Name;
         var states = automata.AllStates.Select(s => s.Name).ToList();
         var alphabet = automata.Alphabet.Select(a => a.Value).ToList();
         
         // If Moore --> create outs row
-        if (automataType.Equals("Moore"))
+        if (_isMoore)
         {
             row.Add("");
             row.AddRange(automata.AllStates.Select(s => s.OutputSignal!));
@@ -49,7 +50,7 @@ public class AutomataFileVisualizer
                     .Select(t =>
                     {
                         string transitionName = t.To.Name;
-                        if (!automataType.Equals("Moore"))
+                        if (!_isMoore)
                         {
                             transitionName = $"{transitionName}/{t.AdditionalData}";
                         }
