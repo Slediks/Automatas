@@ -131,23 +131,23 @@ public static class MinimizationGroupsConvertor
     private static List<MinimizationGroup> DeleteUnreachGroups(List<MinimizationGroup> groups,
         HashSet<Transition> oldTransitions)
     {
-        var reachableGroups = new List<MinimizationGroup>();
+        var reachableGroups = new List<MinimizationGroup> {groups.First()};
         var untestedGroups = new List<MinimizationGroup> {groups.First()};
         
         while (untestedGroups.Count != 0)
         {
-            foreach (var fromGroup in untestedGroups.ToList())
+            var fromGroup = untestedGroups.First();
+
+            foreach (var transition in oldTransitions.Where(t => t.From.Equals(fromGroup.GetStates().First())))
             {
-                foreach (var transition in oldTransitions.Where(t => t.From.Equals(fromGroup.GetStates().First())))
-                {
-                    var toGroup = groups.Single(g => g.GetStates().Contains(transition.To));
-                    if (reachableGroups.Contains(toGroup)) continue;
-                    reachableGroups.Add(toGroup);
-                    untestedGroups.Add(toGroup);
-                }
-                
-                untestedGroups.Remove(fromGroup);
+                var toGroup = groups.Single(g => g.GetStates().Contains(transition.To));
+                if (reachableGroups.Contains(toGroup)) continue;
+                reachableGroups.Add(toGroup);
+                untestedGroups.Add(toGroup);
             }
+
+            untestedGroups.Remove(fromGroup);
+            
         }
 
         return reachableGroups;
