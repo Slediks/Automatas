@@ -10,7 +10,9 @@ public class AutomataImageVisualizer(Automata automata)
 {
     private readonly string _graphvizPath = "./Graphviz/bin/dot.exe";
     private readonly string _graphName = "Graph";
-    private readonly bool _isMoore = automata.AllStates.First().OutputSignal != null;
+    private readonly bool _isMoore = automata.GetType().Name != "Automata"
+        ? automata.GetType().Name == "Moore"
+        : automata.AllStates.First().OutputSignal != null;
 
     public async Task ToImage(string imagePath)
     {

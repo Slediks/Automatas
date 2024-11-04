@@ -23,22 +23,21 @@ public class Minimizer : IAutomataConvertor<Automata>
             ? MinimizationGroupsConvertor.ParseFromStates(_automata.AllStates)
             : MinimizationGroupsConvertor.ParseFromOutputs(_automata);
         
-        bool hasChanges = true;
+        var hasChanges = true;
         while (hasChanges)
         {
             var newGroups = new List<MinimizationGroup>();
 
             hasChanges = false;
-            foreach (var group in groups)
+            foreach (var curGroup in groups.Select(group => group.Copy()))
             {
-                var curGroup = group.Copy();
                 newGroups.Add(curGroup);
                 
                 var createdGroups = new List<MinimizationGroup>();
 
                 var groupExample = curGroup.GetStates().First();
                 var statesQueue = new Queue<State>(curGroup.GetStates().Skip(1));
-                while (statesQueue.Any())
+                while (statesQueue.Count != 0)
                 {
                     var curState = statesQueue.Dequeue();
                     if (HasSameEquivalenceClass(groupExample, curState, groups))
@@ -48,16 +47,16 @@ public class Minimizer : IAutomataConvertor<Automata>
                     
                     curGroup.Remove(curState.Name);
                     
-                    bool addedToGroup = false;
-                    foreach (var createdGroup in createdGroups)
+                    var addedToGroup = false;
+                    foreach (var createdGroup in 
+                             from createdGroup in createdGroups
+                             let createdGroupExample = createdGroup.GetStates().First()
+                             where HasSameEquivalenceClass(curState, createdGroupExample, groups)
+                             select createdGroup)
                     {
-                        var createdGroupExample = createdGroup.GetStates().First();
-                        if (HasSameEquivalenceClass(curState, createdGroupExample, groups))
-                        {
-                            createdGroup.Add(curState);
-                            addedToGroup = true;
-                            break;
-                        }
+                        createdGroup.Add(curState);
+                        addedToGroup = true;
+                        break;
                     }
 
                     if (!addedToGroup)
@@ -66,7 +65,7 @@ public class Minimizer : IAutomataConvertor<Automata>
                     }
                 }
 
-                if (createdGroups.Any())
+                if (createdGroups.Count != 0)
                 {
                     hasChanges = true;
                 }

@@ -10,7 +10,9 @@ public class AutomataFileVisualizer
     private bool _isMoore = false;
     public void WriteAutomataToFile(Automata automata, string filePath)
     {
-        _isMoore = automata.AllStates.First().OutputSignal != null;
+        _isMoore = automata.GetType().Name != "Automata"
+            ? automata.GetType().Name == "Moore"
+            : automata.AllStates.First().OutputSignal != null;
         WriteRowsToCsvFile(ConvertAutomataToRows(automata), filePath);
     }
 

@@ -84,11 +84,12 @@ public static class MinimizationGroupsConvertor
         HashSet<Argument> alphabet,
         HashSet<Transition> oldTransitions)
     {
-        bool isMealy = groups.First().GetStates().First().OutputSignal == null;
         var states = new HashSet<State>();
         var oldStateToNewState = new Dictionary<State, State>();
 
-        foreach (var group in groups)
+        List<MinimizationGroup> reachableGroups = DeleteUnreachGroups(groups, oldTransitions);
+        
+        foreach (var group in reachableGroups)
         {
             var newState = new State($"s{states.Count.ToString()}", group.GetStates().First().OutputSignal);
             
@@ -100,6 +101,11 @@ public static class MinimizationGroupsConvertor
         var transitions = new HashSet<Transition>();
         foreach (var transition in oldTransitions)
         {
+            if (!(oldStateToNewState.ContainsKey(transition.From) && oldStateToNewState.ContainsKey(transition.To)))
+            {
+                continue;
+            }
+            
             var from = oldStateToNewState[transition.From];
             var to = oldStateToNewState[transition.To];
             var argument = transition.Argument;
@@ -120,5 +126,30 @@ public static class MinimizationGroupsConvertor
             alphabet,
             transitions,
             states);
+    }
+
+    private static List<MinimizationGroup> DeleteUnreachGroups(List<MinimizationGroup> groups,
+        HashSet<Transition> oldTransitions)
+    {
+        var reachableGroups = new List<MinimizationGroup>();
+        var untestedGroups = new List<MinimizationGroup> {groups.First()};
+        
+        while (untestedGroups.Count != 0)
+        {
+            foreach (var fromGroup in untestedGroups.ToList())
+            {
+                foreach (var transition in oldTransitions.Where(t => t.From.Equals(fromGroup.GetStates().First())))
+                {
+                    var toGroup = groups.Single(g => g.GetStates().Contains(transition.To));
+                    if (reachableGroups.Contains(toGroup)) continue;
+                    reachableGroups.Add(toGroup);
+                    untestedGroups.Add(toGroup);
+                }
+                
+                untestedGroups.Remove(fromGroup);
+            }
+        }
+
+        return reachableGroups;
     }
 }

@@ -6,18 +6,21 @@ namespace Visualizations.Implementation;
 
 public class AutomataConsoleVisualizer(Automata automata)
 {
-    private readonly bool _isMoore = automata.AllStates.First().OutputSignal != null;
+    private readonly bool _isMoore = automata.GetType().Name != "Automata"
+        ? automata.GetType().Name == "Moore"
+        : automata.AllStates.First().OutputSignal != null;
+
     public void Print()
     {
         // Create columns
         string[] columns = BuildColumns().ToArray();
-        
+
         // Create rows
         var rows = BuildRows(columns).ToArray();
 
         var table = new ConsoleTable(columns);
         table.Options.EnableCount = false;
-        
+
         foreach (var row in rows)
         {
             table.AddRow(row.ToArray());
@@ -26,16 +29,16 @@ public class AutomataConsoleVisualizer(Automata automata)
         if (automata.Overrides != null)
         {
             Console.WriteLine("Overrides:");
-            
+
             foreach (var automataOverride in automata.Overrides)
             {
                 var stateOverride = $"| {automataOverride.Key.Name} = {automataOverride.Value} ";
                 Console.WriteLine(stateOverride);
             }
-            
+
             Console.WriteLine();
         }
-        
+
         table.Write();
     }
 
@@ -48,7 +51,7 @@ public class AutomataConsoleVisualizer(Automata automata)
         //
         //     yield return additionalRow;
         // }
-        
+
         foreach (Argument argument in automata.Alphabet)
         {
             var row = new List<string>();
@@ -77,7 +80,7 @@ public class AutomataConsoleVisualizer(Automata automata)
                     })
                     .First());
             }
-            
+
             yield return row;
         }
     }
@@ -86,7 +89,7 @@ public class AutomataConsoleVisualizer(Automata automata)
     {
         var columns = new List<string> { "Id" };
 
-        
+
         columns.AddRange(_isMoore
             ? automata.AllStates.Select(s => s.ToString())
             : automata.AllStates.Select(s => s.Name));
