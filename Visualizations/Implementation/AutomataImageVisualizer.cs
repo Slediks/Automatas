@@ -12,7 +12,7 @@ public class AutomataImageVisualizer(Automata automata)
     private readonly string _graphName = "Graph";
     private readonly bool _isMoore = automata.GetType().Name != "Automata"
         ? automata.GetType().Name == "Moore"
-        : automata.AllStates.First().OutputSignal != null;
+        : automata.AllStates.Any(s => s.OutputSignal != null);
 
     public async Task ToImage(string imagePath)
     {
@@ -71,7 +71,9 @@ public class AutomataImageVisualizer(Automata automata)
             var label = _isMoore
                 ? state.ToString()
                 : state.Name;
-            var shape = "circle";
+            var shape = state.IsFinal
+                ? "doublecircle"
+                : "circle";
             var fillcolor = "white";
             
             yield return $"{state.Name} [style=\"{style}\" fillcolor=\"{fillcolor}\" label=\"{label}\" shape=\"{shape}\"];";

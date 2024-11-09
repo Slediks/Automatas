@@ -12,7 +12,7 @@ public class AutomataFileVisualizer
     {
         _isMoore = automata.GetType().Name != "Automata"
             ? automata.GetType().Name == "Moore"
-            : automata.AllStates.First().OutputSignal != null;
+            : automata.AllStates.Any(s => s.OutputSignal != null);
         WriteRowsToCsvFile(ConvertAutomataToRows(automata), filePath);
     }
 
@@ -27,7 +27,7 @@ public class AutomataFileVisualizer
         if (_isMoore)
         {
             row.Add("");
-            row.AddRange(automata.AllStates.Select(s => s.OutputSignal!));
+            row.AddRange(automata.AllStates.Select(s => s.OutputSignal ?? ""));
             
             rows.Add([..row]);
             row.Clear();
@@ -45,7 +45,7 @@ public class AutomataFileVisualizer
             row.Add(argument);
             foreach (var state in states)
             {
-                row.Add(automata.Transitions
+                var transitions = automata.Transitions
                     .Where(t => 
                         t.From.Name.Equals(state)
                         && t.Argument.Value.Equals(argument))
@@ -58,7 +58,8 @@ public class AutomataFileVisualizer
                         }
 
                         return transitionName;
-                    }).First());
+                    }).ToList();
+                row.Add(string.Join(',', transitions));
             }
             rows.Add([..row]);
             row.Clear();

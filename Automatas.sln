@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Visualizations", "Visualizations\Visualizations.csproj", "{3A211F31-840B-428E-B0E7-94FDB574ECF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSVFilesWorkers", "CSVFilesWorkers\CSVFilesWorkers.csproj", "{494D8DB6-8F75-45CE-BFC9-46A15E3831FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileWorkers", "FileWorkers\FileWorkers.csproj", "{494D8DB6-8F75-45CE-BFC9-46A15E3831FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -8,7 +8,7 @@ public class Automata
     public readonly HashSet<Argument> Alphabet;
     public readonly HashSet<Transition> Transitions;
     public readonly HashSet<State> AllStates;
-    public readonly Dictionary<State, (State, string)>? Overrides;
+    public readonly Dictionary<string, State>? Overrides;
 
     public Automata(
         IEnumerable<Argument> alphabet,
@@ -19,7 +19,7 @@ public class Automata
         AllStates = allStates.ToHashSet();
         Transitions = transitions.ToHashSet();
 
-        foreach (Transition transition in Transitions)
+        foreach (var transition in Transitions)
         {
             if (!AllStates.Contains(transition.From))
             {
@@ -44,13 +44,20 @@ public class Automata
         }
     }
 
-    public Automata(Dictionary<State, (State, string)> overrides, ICollection<Transition> transitions)
+    public Automata(Dictionary<string, State> overrides, ICollection<Transition> transitions)
         : this(
             transitions.Select(t => t.Argument).Distinct(),
             transitions,
-            overrides.Keys)
+            overrides.Values)
     {
         Overrides = overrides;
+    }
+
+    public Automata(IEnumerable<State> allStates, ICollection<Transition> transitions)
+        : this(transitions.Select(t => t.Argument).Distinct(),
+            transitions,
+            allStates)
+    {
     }
     
     public Automata(ICollection<Transition> transitions)
@@ -61,7 +68,7 @@ public class Automata
     {
     }
 
-    public Automata(Automata automata)
+    protected Automata(Automata automata)
         : this(
             automata.Alphabet,
             automata.Transitions,

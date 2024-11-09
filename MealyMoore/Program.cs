@@ -1,4 +1,4 @@
-﻿using CSVFilesWorkers.FileReaders;
+﻿using FileWorkers.FileReaders;
 using Domain.Convertors;
 using Domain.Convertors.Convertors;
 using Domain.Convertors.Convertors.Minimization.Implementation;
@@ -15,7 +15,7 @@ public class Program
         var program = args[0];
         var automataType = args[1];
         _inputFilePath = args[2];
-
+        
         Automata automata;
         switch (automataType)
         {
@@ -23,33 +23,37 @@ public class Program
                 break;
             case "moore":
                 break;
+            case "grammar":
+                break;
             default:
                 throw new ArgumentException($"Unknown automata type: {automataType}");
         }
 
-        switch (program)
+        automata = program switch
         {
-            case "convert":
-                automata = automataType == "mealy"
-                    ? Convert(Mealy())
-                    : Convert(Moore());
-                break;
-            case "minimize":
-                automata = automataType == "mealy"
-                    ? Minimize(Mealy())
-                    : Minimize(Moore());
-                break;
-            default:
-                throw new ArgumentException($"Unknown program type: {program}");
-        }
-        
+            "convert" => automataType switch
+            {
+                "mealy" => Convert(Mealy()),
+                "moore" => Convert(Moore()),
+                "grammar" => CreateNfa(),
+                _ => throw new ArgumentException($"Program({program}) don't support type: {automataType}")
+            },
+            "minimize" => automataType switch
+            {
+                "mealy" => Minimize(Mealy()),
+                "moore" => Minimize(Moore()),
+                _ => throw new ArgumentException($"Program({program}) don't support type: {automataType}")
+            },
+            _ => throw new ArgumentException($"Unknown program type: {program}")
+        };
+
         PrintAll(automata);
     }
 
     private static Mealy Mealy()
     {
         // Mealy
-        var automata = new Mealy(new AutomataFileReader().CreateAutomataFromFile(_inputFilePath));
+        var automata = new Mealy(new CsvFileReader().CreateAutomataFromFile(_inputFilePath));
         automata
             .PrintToConsole()
             .PrintToImage();
@@ -59,7 +63,7 @@ public class Program
     private static Moore Moore()
     {
         // Moore
-        var automata = new Moore(new AutomataFileReader().CreateAutomataFromFile(_inputFilePath)); //Automata creation
+        var automata = new Moore(new CsvFileReader().CreateAutomataFromFile(_inputFilePath)); //Automata creation
         automata
             .PrintToConsole() //Print to console as table  <- Moore
             .PrintToImage(); //Create .png file with graph  <- Moore
@@ -74,6 +78,11 @@ public class Program
     private static Mealy Convert(Moore automata)
     {
         return automata.Convert(new MooreMealyConvertor());
+    }
+
+    private static Automata CreateNfa()
+    {
+        return GrammarToNfaConvertor.Convert(new TxtFileReader().ReadTxtFile(_inputFilePath));
     }
 
     private static void PrintAll(Automata automata)

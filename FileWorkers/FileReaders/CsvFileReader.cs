@@ -4,9 +4,9 @@ using CsvHelper.Configuration;
 using Domain.Models.Automatas;
 using Domain.Models.ValueObjects;
 
-namespace CSVFilesWorkers.FileReaders;
+namespace FileWorkers.FileReaders;
 
-public class AutomataFileReader
+public class CsvFileReader
 {
     public Automata CreateAutomataFromFile(string filePath)
     {

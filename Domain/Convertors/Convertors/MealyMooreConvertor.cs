@@ -9,7 +9,10 @@ public class MealyMooreConvertor : IAutomataConvertor<Mealy, Moore>
     {
         var newStates = BuildStateOverrides(automata);
         
-        return new Moore(newStates, BuildTransitions(newStates, automata));
+        return new Moore(
+            newStates.Select(pair =>
+                    new KeyValuePair<string, State>($"{pair.Value.Item1.Name}/{pair.Value.Item2}", pair.Key))
+                .ToDictionary(), BuildTransitions(newStates, automata));
     }
 
     private static HashSet<Transition> BuildTransitions(Dictionary<State, (State, string)> states, Mealy automata)

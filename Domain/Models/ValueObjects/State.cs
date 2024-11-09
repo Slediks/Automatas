@@ -1,9 +1,11 @@
 namespace Domain.Models.ValueObjects;
 
-public class State(string name, string? outputSignal = null) : IComparable
+public class State(string name, string? outputSignal = null, bool isFinal = false) : IComparable
 {
     public string Name { get; } = name;
     public string? OutputSignal { get; set; } = outputSignal;
+    
+    public bool IsFinal { get; set; } = isFinal;
 
     public override bool Equals(object? obj)
     {
@@ -12,14 +14,12 @@ public class State(string name, string? outputSignal = null) : IComparable
 
     public bool Equals(State other)
     {
-        return Name == other.Name && OutputSignal == other.OutputSignal;
+        return Name == other.Name;
     }
 
     public override int GetHashCode()
     {
-        return OutputSignal != null
-            ? HashCode.Combine(Name.GetHashCode(), OutputSignal.GetHashCode())
-            : Name.GetHashCode();
+        return Name.GetHashCode();
     }
 
     public override string ToString()

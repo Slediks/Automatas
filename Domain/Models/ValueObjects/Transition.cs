@@ -6,13 +6,13 @@ public class Transition
     public Argument Argument { get; }
     public State To { get; set; }
 
-    public string AdditionalData { get; }
+    public string? AdditionalData { get; }
 
     public Transition(
         State from,
         Argument argument,
         State to,
-        string additionalData)
+        string? additionalData = null)
     {
         From = from;
         Argument = argument;
