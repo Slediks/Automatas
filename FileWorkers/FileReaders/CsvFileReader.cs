@@ -8,6 +8,8 @@ namespace FileWorkers.FileReaders;
 
 public class CsvFileReader
 {
+    private bool isMoore;
+    
     public Automata CreateAutomataFromFile(string filePath)
     {
         // Get table as rows<cells>
@@ -15,8 +17,9 @@ public class CsvFileReader
 
         //Type of table
         var headerRowsCnt = records.Count(r => r.First().Equals(""));
+        isMoore = headerRowsCnt == 2;
 
-        List<string>? additionalData = headerRowsCnt == 2
+        List<string>? additionalData = isMoore
             ? records.First().Skip(1).ToList()
             : null;
         
@@ -25,7 +28,9 @@ public class CsvFileReader
         {
             for (int i = 0; i < states.Count; i++)
             {
-                states[i].OutputSignal = additionalData[i];
+                states[i].OutputSignal = additionalData[i] != ""
+                    ? additionalData[i]
+                    : null;
             }
         }
         
@@ -82,17 +87,27 @@ public class CsvFileReader
     {
         var transitions = new List<Transition>();
         
-        for (int i = 0; i < records.Count(); i++)
+        for (var i = 0; i < records.Count; i++)
         {
-            for (int j = 1; j < records[0].Count; j++)
+            for (var j = 1; j < records[0].Count; j++)
             {
-                var parsedCell = records[i][j].Split("/");
+                var parsedCell = records[i][j].Split(',').Select(s => s.Split('/')).ToList();
 
-                transitions.Add(new Transition(
-                    from: states[j - 1],
-                    to: states.First(s => s.Name == parsedCell[0]),
-                    argument: alphabet[i],
-                    additionalData: states.First(s => s.Name == parsedCell[0]).OutputSignal ?? parsedCell[1]));
+                if (parsedCell.First().First().Equals(""))
+                {
+                    continue;
+                }
+                
+                foreach (var cell in parsedCell)
+                {
+                    transitions.Add(new Transition(
+                                        from: states[j - 1],
+                                        to: states.First(s => s.Name == cell[0]),
+                                        argument: alphabet[i],
+                                        additionalData: isMoore
+                                            ? states.First(s => s.Name == cell[0]).OutputSignal
+                                            : cell[1]));
+                }
             }
         }
 

@@ -36,7 +36,7 @@ public class AutomataConsoleVisualizer(Automata automata)
             Console.WriteLine("Overrides:");
 
             foreach (var stateOverride in automata.Overrides.Select(automataOverride =>
-                         $"| {automataOverride.Key} -> {automataOverride.Value.Name}"))
+                         $"| {automataOverride.Key} -> {automataOverride.Value}"))
             {
                 Console.WriteLine(stateOverride);
             }

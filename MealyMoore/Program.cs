@@ -15,33 +15,22 @@ public class Program
         var program = args[0];
         var automataType = args[1];
         _inputFilePath = args[2];
-        
-        Automata automata;
-        switch (automataType)
-        {
-            case "mealy":
-                break;
-            case "moore":
-                break;
-            case "grammar":
-                break;
-            default:
-                throw new ArgumentException($"Unknown automata type: {automataType}");
-        }
 
-        automata = program switch
+        var automata = program switch
         {
             "convert" => automataType switch
             {
                 "mealy" => Convert(Mealy()),
                 "moore" => Convert(Moore()),
                 "grammar" => CreateNfa(),
+                "nfa" => Convert(Automata()),
                 _ => throw new ArgumentException($"Program({program}) don't support type: {automataType}")
             },
             "minimize" => automataType switch
             {
                 "mealy" => Minimize(Mealy()),
                 "moore" => Minimize(Moore()),
+                "dfa" => Minimize(Automata()),
                 _ => throw new ArgumentException($"Program({program}) don't support type: {automataType}")
             },
             _ => throw new ArgumentException($"Unknown program type: {program}")
@@ -70,6 +59,15 @@ public class Program
         return automata;
     }
 
+    private static Automata Automata()
+    {
+        var automata = new CsvFileReader().CreateAutomataFromFile(_inputFilePath);
+        automata
+            .PrintToConsole()
+            .PrintToImage();
+        return automata;
+    }
+
     private static Moore Convert(Mealy automata)
     {
         return automata.Convert(new MealyMooreConvertor());
@@ -78,6 +76,11 @@ public class Program
     private static Mealy Convert(Moore automata)
     {
         return automata.Convert(new MooreMealyConvertor());
+    }
+
+    private static Automata Convert(Automata automata)
+    {
+        return automata.Convert(new NfaToDfaConvertor());
     }
 
     private static Automata CreateNfa()

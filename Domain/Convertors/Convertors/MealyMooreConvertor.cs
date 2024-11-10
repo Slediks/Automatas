@@ -8,11 +8,13 @@ public class MealyMooreConvertor : IAutomataConvertor<Mealy, Moore>
     public Moore Convert(Mealy automata)
     {
         var newStates = BuildStateOverrides(automata);
-        
+
         return new Moore(
-            newStates.Select(pair =>
-                    new KeyValuePair<string, State>($"{pair.Value.Item1.Name}/{pair.Value.Item2}", pair.Key))
-                .ToDictionary(), BuildTransitions(newStates, automata));
+            newStates.Select(pair => new KeyValuePair<string, string>($"{pair.Value.Item1.Name}/{pair.Value.Item2}",
+                    pair.Key.Name))
+                .ToDictionary(),
+            newStates.Keys,
+            BuildTransitions(newStates, automata));
     }
 
     private static HashSet<Transition> BuildTransitions(Dictionary<State, (State, string)> states, Mealy automata)
@@ -28,7 +30,7 @@ public class MealyMooreConvertor : IAutomataConvertor<Mealy, Moore>
             var stateTransitions = oldStateTransitions.Select(t => new Transition(
                 from: state.Key,
                 to: states
-                    .First(s => s.Value.Equals((t.To, t.AdditionalData)))
+                    .First(s => s.Value.Equals((t.To, t.AdditionalData!)))
                     .Key,
                 argument: t.Argument,
                 additionalData: t.AdditionalData));
@@ -46,7 +48,7 @@ public class MealyMooreConvertor : IAutomataConvertor<Mealy, Moore>
 
         foreach (var transition in automata.Transitions)
         {
-            preStates.Add((transition.To, transition.AdditionalData));
+            preStates.Add((transition.To, transition.AdditionalData!));
         }
 
         if (!preStates.Select(s => s.Item1).Contains(automata.AllStates.First()))

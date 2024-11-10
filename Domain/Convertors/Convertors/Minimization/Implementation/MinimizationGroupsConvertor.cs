@@ -6,7 +6,7 @@ namespace Domain.Convertors.Convertors.Minimization.Implementation;
 
 public static class MinimizationGroupsConvertor
 {
-    public static List<MinimizationGroup> ParseFromStates(IEnumerable<State> states)
+    public static List<MinimizationGroup> ParseFromStates(List<State> states)
     {
         var minimizationGroups = new List<MinimizationGroup> { new(states.First()) };
 
@@ -81,11 +81,11 @@ public static class MinimizationGroupsConvertor
 
     public static Automata ConvertToAutomata(
         List<MinimizationGroup> groups,
-        HashSet<Argument> alphabet,
         HashSet<Transition> oldTransitions)
     {
         var states = new HashSet<State>();
         var oldStateToNewState = new Dictionary<State, State>();
+        var overrides = new Dictionary<string, string>();
 
         List<MinimizationGroup> reachableGroups = DeleteUnreachGroups(groups, oldTransitions);
         
@@ -93,9 +93,15 @@ public static class MinimizationGroupsConvertor
         {
             var newState = new State($"s{states.Count.ToString()}", group.GetStates().First().OutputSignal);
             
+            overrides.Add(string.Join(", ", group.GetStates()), newState.ToString());
             group.GetStates().ForEach(s => oldStateToNewState.Add(s, newState));
             
             states.Add(newState);
+        }
+        
+        foreach (var group in groups.Where(g => !reachableGroups.Contains(g)))
+        {
+            overrides.Add(string.Join(", ", group.GetStates()), "\"Unreachable\"");
         }
         
         var transitions = new HashSet<Transition>();
@@ -123,9 +129,9 @@ public static class MinimizationGroupsConvertor
         }
 
         return new Automata(
-            alphabet,
-            transitions,
-            states);
+            overrides,
+            states,
+            transitions);
     }
 
     private static List<MinimizationGroup> DeleteUnreachGroups(List<MinimizationGroup> groups,

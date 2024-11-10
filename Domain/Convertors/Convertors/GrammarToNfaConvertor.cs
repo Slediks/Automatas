@@ -6,7 +6,7 @@ namespace Domain.Convertors.Convertors;
 
 public static class GrammarToNfaConvertor
 {
-    private static bool _isLeft = false;
+    private static bool _isLeft;
     private const string FinalName = "FinalState";
 
     public static Automata Convert(IEnumerable<string> lines)
@@ -22,7 +22,10 @@ public static class GrammarToNfaConvertor
         var transitions = CreateTransitions(oldStatesToNewStates, grammar);
 
         
-        return new Automata(oldStatesToNewStates, transitions);
+        return new Automata(
+            oldStatesToNewStates.Select(kvp => new KeyValuePair<string,string>(kvp.Key, kvp.Value.Name)).ToDictionary(),
+            oldStatesToNewStates.Values,
+            transitions);
     }
 
     private static Dictionary<string, List<string>> ParseLines(IEnumerable<string> lines) // return [state, [transition]]

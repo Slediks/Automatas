@@ -20,6 +20,14 @@
       "commandName": "Project",
       "commandLineArgs": "convert grammar input_grammar.txt"
     },
+    "NfaToDfa": {
+      "commandName": "Project",
+      "commandLineArgs": "convert nfa input_nfa.csv"
+    },
+    "MinimizeDfa" : {
+      "commandName": "Project",
+      "commandLineArgs": "minimize dfa input_dfa.csv"
+    },
     "Test": {
       "commandName": "Project",
       "commandLineArgs": "minimize moore input9.csv"

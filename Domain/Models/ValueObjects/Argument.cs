@@ -4,6 +4,8 @@ public class Argument(string value) : IComparable
 {
     public readonly string Value = value;
 
+    public static string Epsilon = "ε";
+
     public override bool Equals(object? obj)
     {
         return obj is Argument other && Equals(other);

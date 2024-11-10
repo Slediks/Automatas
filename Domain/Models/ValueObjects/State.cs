@@ -2,7 +2,7 @@ namespace Domain.Models.ValueObjects;
 
 public class State(string name, string? outputSignal = null, bool isFinal = false) : IComparable
 {
-    public string Name { get; } = name;
+    public string Name { get; set; } = name;
     public string? OutputSignal { get; set; } = outputSignal;
     
     public bool IsFinal { get; set; } = isFinal;
@@ -39,8 +39,10 @@ public class State(string name, string? outputSignal = null, bool isFinal = fals
         return String.CompareOrdinal(Name, other.Name);
     }
 
-    public static bool operator ==(State left, State right)
+    public static bool operator ==(State? left, State? right)
     {
+        if (left is null && right is null) return true;
+        if (left is null || right is null) return false;
         return left.Equals(right);
     }
 

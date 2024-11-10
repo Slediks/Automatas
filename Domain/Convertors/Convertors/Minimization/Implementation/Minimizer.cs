@@ -4,7 +4,7 @@ using Domain.Models.ValueObjects;
 
 namespace Domain.Convertors.Convertors.Minimization.Implementation;
 
-public class Minimizer : IAutomataConvertor<Automata>
+public class Minimizer : IAutomataMinimizer<Automata>
 {
     private Automata _automata = null!;
 
@@ -13,14 +13,13 @@ public class Minimizer : IAutomataConvertor<Automata>
         _automata = automata;
         return MinimizationGroupsConvertor.ConvertToAutomata(
             FindEquivalentStates(),
-            _automata.Alphabet,
             _automata.Transitions);
     }
 
     private List<MinimizationGroup> FindEquivalentStates()
     {
-        var groups = _automata.AllStates.First().OutputSignal != null
-            ? MinimizationGroupsConvertor.ParseFromStates(_automata.AllStates)
+        var groups = _automata.AllStates.Any(s => s.OutputSignal != null)
+            ? MinimizationGroupsConvertor.ParseFromStates(_automata.AllStates.ToList())
             : MinimizationGroupsConvertor.ParseFromOutputs(_automata);
         
         var hasChanges = true;
@@ -89,9 +88,9 @@ public class Minimizer : IAutomataConvertor<Automata>
             var firstGroup = groups.SingleOrDefault(g =>
                 g.Any(s => s == _automata
                     .Transitions
-                    .Single(t =>
+                    .SingleOrDefault(t =>
                         t.From == firstState &&
-                        t.Argument == argument)
+                        t.Argument == argument)?
                     .To));
             if (firstGroup == null)
             {
@@ -101,9 +100,9 @@ public class Minimizer : IAutomataConvertor<Automata>
             var secondGroup = groups.SingleOrDefault(g =>
                 g.Any(s => s == _automata
                     .Transitions
-                    .Single(t =>
+                    .SingleOrDefault(t =>
                         t.From == secondState &&
-                        t.Argument == argument)
+                        t.Argument == argument)?
                     .To));
             if (secondGroup == null)
             {

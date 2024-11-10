@@ -8,7 +8,7 @@ public class Automata
     public readonly HashSet<Argument> Alphabet;
     public readonly HashSet<Transition> Transitions;
     public readonly HashSet<State> AllStates;
-    public readonly Dictionary<string, State>? Overrides;
+    public readonly Dictionary<string, string>? Overrides;
 
     public Automata(
         IEnumerable<Argument> alphabet,
@@ -44,11 +44,11 @@ public class Automata
         }
     }
 
-    public Automata(Dictionary<string, State> overrides, ICollection<Transition> transitions)
+    public Automata(Dictionary<string, string> overrides, IEnumerable<State> states, ICollection<Transition> transitions)
         : this(
             transitions.Select(t => t.Argument).Distinct(),
             transitions,
-            overrides.Values)
+            states)
     {
         Overrides = overrides;
     }
@@ -74,6 +74,63 @@ public class Automata
             automata.Transitions,
             automata.AllStates)
     {
+    }
+
+    public HashSet<State> Move(State from, Argument argument, HashSet<State>? epsClosures = null)
+    {
+        epsClosures ??= EpsClosure(from).ToHashSet();
+
+        return Transitions
+            .Where(transition =>
+                transition.Argument.Equals(argument) &&
+                epsClosures.Contains(transition.From))
+            .Select(transition => transition.To)
+            .ToHashSet();
+    }
+
+    public Dictionary<State, HashSet<State>> EpsClosure()
+    {
+        var result = new Dictionary<State, HashSet<State>>();
+        foreach (var state in AllStates)
+        {
+            result[state] = EpsClosure(state);
+        }
+
+        return result;
+    }
+
+    private HashSet<State> EpsClosure(State from)
+    {
+        var closures = new HashSet<State> { from };
+
+        var statesToProcess = new Queue<State>();
+        var processedStates = new HashSet<State>();
+        statesToProcess.Enqueue(from);
+
+        while (statesToProcess.Count != 0)
+        {
+            var state = statesToProcess.Dequeue();
+            if (!processedStates.Add(state))
+            {
+                continue;
+            }
+
+            var stateTransitions = new Queue<Transition>(Transitions.Where(transition => transition.From == state));
+
+            while (stateTransitions.Count != 0)
+            {
+                var transition = stateTransitions.Dequeue();
+                if (transition.Argument.Value != Argument.Epsilon)
+                {
+                    continue;
+                }
+
+                closures.Add(transition.To);
+                statesToProcess.Enqueue(transition.To);
+            }
+        }
+
+        return closures;
     }
     
     public Automata Clone() => new(

@@ -5,9 +5,10 @@ namespace Domain.Models.Automatas;
 public class Moore : Automata
 {
     public Moore(
-        Dictionary<string, State> overrides,
+        Dictionary<string, string> overrides,
+        IEnumerable<State> states,
         ICollection<Transition> transitions)
-        : base(overrides, transitions)
+        : base(overrides, states, transitions)
     {
     }
 
