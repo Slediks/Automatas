@@ -121,7 +121,7 @@ public static class MinimizationGroupsConvertor
                 t.From.Equals(from) &&
                 t.To.Equals(to) &&
                 t.Argument.Equals(argument) &&
-                t.AdditionalData.Equals(additionalData));
+                t.AdditionalData!.Equals(additionalData));
             if (!hasThisTransition)
             {
                 transitions.Add(new Transition(from, argument, to, additionalData));

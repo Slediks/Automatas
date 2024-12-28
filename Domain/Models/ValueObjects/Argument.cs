@@ -4,7 +4,7 @@ public class Argument(string value) : IComparable
 {
     public readonly string Value = value;
 
-    public static string Epsilon = "ε";
+    public const string Epsilon = "_";
 
     public override bool Equals(object? obj)
     {

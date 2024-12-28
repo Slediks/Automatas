@@ -15,7 +15,7 @@ public class Program
         var program = args[0];
         var automataType = args[1];
         _inputFilePath = args[2];
-
+        
         var automata = program switch
         {
             "convert" => automataType switch
@@ -24,6 +24,7 @@ public class Program
                 "moore" => Convert(Moore()),
                 "grammar" => CreateNfa(),
                 "nfa" => Convert(Automata()),
+                "regex" => Convert(),
                 _ => throw new ArgumentException($"Program({program}) don't support type: {automataType}")
             },
             "minimize" => automataType switch
@@ -86,6 +87,11 @@ public class Program
     private static Automata CreateNfa()
     {
         return GrammarToNfaConvertor.Convert(new TxtFileReader().ReadTxtFile(_inputFilePath));
+    }
+
+    private static Automata Convert()
+    {
+        return RegexToDfaConvertor.Convert(new TxtFileReader().ReadTxtFile(_inputFilePath).First());
     }
 
     private static void PrintAll(Automata automata)

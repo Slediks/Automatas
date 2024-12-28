@@ -68,12 +68,12 @@ public class AutomataImageVisualizer(Automata automata)
         foreach (var state in automata.AllStates)
         {
             var style = "filled";
-            var label = _isMoore
-                ? state.ToString()
-                : state.Name;
-            var shape = state.IsFinal
+            var shape = state.IsFinal || state.OutputSignal == "F"
                 ? "doublecircle"
                 : "circle";
+            var label = _isMoore && state.OutputSignal != "F"
+                ? state.ToString()
+                : state.Name;
             var fillcolor = "white";
             
             yield return $"{state.Name} [style=\"{style}\" fillcolor=\"{fillcolor}\" label=\"{label}\" shape=\"{shape}\"];";

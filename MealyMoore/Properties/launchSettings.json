@@ -28,9 +28,13 @@
       "commandName": "Project",
       "commandLineArgs": "minimize dfa input_dfa.csv"
     },
+    "RegexToDfa" : {
+      "commandName": "Project",
+      "commandLineArgs": "convert regex input_regex.txt"
+    },
     "Test": {
       "commandName": "Project",
-      "commandLineArgs": "minimize moore input9.csv"
+      "commandLineArgs": "convert nfa intest2.csv"
     }
   }
 }
