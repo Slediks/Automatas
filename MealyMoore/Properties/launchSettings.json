@@ -32,6 +32,10 @@
       "commandName": "Project",
       "commandLineArgs": "convert regex input_regex.txt"
     },
+    "Lexer" : {
+      "commandName": "Project",
+      "commandLineArgs": "lexer input_lexer.txt"
+    },
     "Test": {
       "commandName": "Project",
       "commandLineArgs": "convert nfa intest2.csv"

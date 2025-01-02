@@ -2,6 +2,7 @@
 using Domain.Convertors;
 using Domain.Convertors.Convertors;
 using Domain.Convertors.Convertors.Minimization.Implementation;
+using Domain.Lexer;
 using Domain.Models.Automatas;
 using Visualizations;
 
@@ -13,8 +14,17 @@ public class Program
     public static void Main(string[] args)
     {
         var program = args[0];
+
+        if (program == "lexer")
+        {
+            LexText(args[1]);
+            return;
+        }
+        
         var automataType = args[1];
         _inputFilePath = args[2];
+        
+        
         
         var automata = program switch
         {
@@ -38,6 +48,15 @@ public class Program
         };
 
         PrintAll(automata);
+    }
+
+    private static void LexText(string input)
+    {
+        var lexer = new Lexer(input);
+        lexer.Lexemes.ForEach(lex =>
+            Console.WriteLine($"{lex.Name} : {Lexer.TokenToString(lex.Token)}\tLine {lex.Line}, Col {lex.Position}"));
+        Console.WriteLine();
+        Console.WriteLine(string.Join(", ", lexer.Identifiers));
     }
 
     private static Mealy Mealy()
